@@ -1,4 +1,4 @@
-package com.kata.api.assertions;
+package com.booking.assertions;
 
 import io.restassured.response.Response;
 
