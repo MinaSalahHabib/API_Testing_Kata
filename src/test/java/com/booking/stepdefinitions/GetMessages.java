@@ -7,15 +7,16 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+import com.booking.client.BookingApiClient;
+
 public class GetMessages {
     private Response response;
+    private final BookingApiClient api = new BookingApiClient();
 
     @When("I want to read the messages")
     public void iWantToReadTheMessages() {
 
-        response = given().log().all()
-                        .when()
-                        .get("https://automationintesting.online/api/message");
+        response = api.message();
     }
 
     @Then("I should receive all existing messages")

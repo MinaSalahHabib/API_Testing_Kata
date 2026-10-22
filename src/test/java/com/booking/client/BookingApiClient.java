@@ -12,6 +12,11 @@ public class BookingApiClient {
     private static final String BOOKING_PATH = "/booking";
     private static final String HEALTH_PATH = "/actuator/health";
     private static final String AUTHORIZATIO_PATH = "/auth/login";
+    private static final String MESSAGE_PATH = "/message";
+
+    public Response message() {
+        return given().log().all().baseUri(ApiConfig.baseUrl()).when().get(MESSAGE_PATH);
+    }
 
     public Response health() {
         return given().baseUri(ApiConfig.baseUrl()).accept(ContentType.JSON).when().get(BOOKING_PATH + HEALTH_PATH);
