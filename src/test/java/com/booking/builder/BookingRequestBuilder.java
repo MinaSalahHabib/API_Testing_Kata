@@ -4,10 +4,11 @@ import com.booking.models.BookingDates;
 import com.booking.models.BookingRequest;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /** Builder pattern: supplies valid defaults and allows a test to mutate one field at a time. */
 public final class BookingRequestBuilder {
-    private int roomId = 204;
+    private int roomId = ThreadLocalRandom.current().nextInt(100, 1001);
     private String firstName = "Mina";
     private String lastName = "Badros";
     private boolean depositPaid = true;

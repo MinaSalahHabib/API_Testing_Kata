@@ -4,6 +4,7 @@ package com.booking.stepdefinitions;
 
 import com.booking.builder.BookingRequestBuilder;
 import com.booking.client.BookingApiClient;
+import com.booking.config.ApiConfig;
 import com.booking.models.BookingRequest;
 import com.booking.assertions.BookingAssertions;
 
@@ -22,6 +23,8 @@ public class BookingSteps {
 
     private Response response;
     private BookingRequest request;
+    private String token;
+    private Integer createdBookingId;
 
     @When("I check the API health")
     public void iCheckApiHealth() {  
@@ -67,12 +70,41 @@ public class BookingSteps {
         request = BookingRequestBuilder.aValidBooking().withDates("2035-06-10", "2035-06-08").build();
     }
 
-     @Given("a booking request without checkout")
+    @Given("a booking request without checkout")
     public void aBookingRequestWithoutCheckout() {
         request = BookingRequestBuilder.aValidBooking().withDates("2035-06-08", "").build();
     }
     @Given("a booking request without checkin")
     public void aBookingRequestWithoutCheckin() {
         request = BookingRequestBuilder.aValidBooking().withDates("", "2035-06-08").build();
+    }
+
+    @When("I authenticate with the configured API credentials")
+    public void iAuthenticateWithConfiguredCredentials() {
+        response = api.login(ApiConfig.username(), ApiConfig.password());
+        assertThat("login status", response.statusCode(), is(200));
+        BookingAssertions.assertJson(response);
+        token = response.jsonPath().getString("token");
+        assertThat("login response must contain a non-empty token", token, not(isEmptyOrNullString()));
+    }
+
+    @When("I create a booking using the authenticated session")
+    public void iCreateBookingUsingAuthenticatedSession() {
+        request = BookingRequestBuilder.aValidBooking().build();
+        response = api.createBooking(request);
+        BookingAssertions.assertCreatedBooking(response, request.getFirstname(), request.getLastname());
+        createdBookingId = response.jsonPath().getInt("bookingid");
+    }
+
+    @When("I retrieve the created booking using the token")
+    public void iRetrieveCreatedBookingUsingToken() { response = api.getBooking(createdBookingId, token); }
+
+    @Then("the retrieved booking should match the submitted details")
+    public void theRetrievedBookingShouldMatchSubmittedDetails() {
+        assertThat("get status", response.statusCode(), is(200));
+        BookingAssertions.assertJson(response);
+        assertThat(response.jsonPath().getString("firstname"), is(request.getFirstname()));
+        assertThat(response.jsonPath().getString("lastname"), is(request.getLastname()));
+        assertThat(response.jsonPath().getInt("roomid"), is(request.getRoomid()));
     }
 }

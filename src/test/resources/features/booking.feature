@@ -96,3 +96,9 @@ Feature: Booking API contract and lifecycle
     Given a booking request without checkout
     When I submit the booking request
     Then the API should reject the request with a validation error
+
+ Scenario: Retrive existing a booking with authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I retrieve the created booking using the token
+    Then the retrieved booking should match the submitted details
