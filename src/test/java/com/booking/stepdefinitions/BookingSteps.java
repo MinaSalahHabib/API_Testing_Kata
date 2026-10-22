@@ -58,4 +58,9 @@ public class BookingSteps {
 
     @Given("a booking request with email {string}")
     public void aBookingRequestWithEmail(String email) { request = BookingRequestBuilder.aValidBooking().withEmail(email).build(); }
+
+    @Given("a booking request with checkout before check-in")
+    public void aBookingRequestWithCheckoutBeforeCheckin() {
+        request = BookingRequestBuilder.aValidBooking().withDates("2035-06-10", "2035-06-08").build();
+    }
 }

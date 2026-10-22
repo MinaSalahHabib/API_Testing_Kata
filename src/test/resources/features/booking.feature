@@ -42,3 +42,9 @@ Feature: Booking API contract and lifecycle
     Given a booking request with email "not-an-email"
     When I submit the booking request
     Then the API should reject the request with a validation error
+
+  # Negative test case for invalid booking dates 
+  Scenario: Reject checkout before check-in
+    Given a booking request with checkout before check-in
+    When I submit the booking request
+    Then the API should reject the request with a validation error
