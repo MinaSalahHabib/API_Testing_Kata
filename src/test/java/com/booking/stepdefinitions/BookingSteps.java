@@ -66,4 +66,13 @@ public class BookingSteps {
     public void aBookingRequestWithCheckoutBeforeCheckin() {
         request = BookingRequestBuilder.aValidBooking().withDates("2035-06-10", "2035-06-08").build();
     }
+
+     @Given("a booking request without checkout")
+    public void aBookingRequestWithoutCheckout() {
+        request = BookingRequestBuilder.aValidBooking().withDates("2035-06-08", "").build();
+    }
+    @Given("a booking request without checkin")
+    public void aBookingRequestWithoutCheckin() {
+        request = BookingRequestBuilder.aValidBooking().withDates("", "2035-06-08").build();
+    }
 }

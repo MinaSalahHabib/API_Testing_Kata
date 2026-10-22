@@ -80,7 +80,19 @@ Feature: Booking API contract and lifecycle
     Then the API should reject the request with a validation error
 
   #Negative test case for Booking without mandatory field (phone number)
-  Scenario: Reject a phone number shorter than the documented minimum
+  Scenario: Reject a booking without mandatory field (phone number)
     Given a booking request with phone ""
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  #Negative test case for Booking without mandatory field (checkin)
+  Scenario: Reject a booking without mandatory field (checkin)
+    Given a booking request without checkin
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  #Negative test case for Booking without mandatory field (checkout)
+  Scenario: Reject a booking without mandatory field (checkout)
+    Given a booking request without checkout
     When I submit the booking request
     Then the API should reject the request with a validation error
