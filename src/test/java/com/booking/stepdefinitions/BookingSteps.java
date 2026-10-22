@@ -52,4 +52,10 @@ public class BookingSteps {
 
     @Then("the API should reject the request with a validation error")
     public void theApiShouldRejectTheRequestWithValidationError() { BookingAssertions.assertValidationError(response); }
+
+    @Given("a booking request with phone {string}")
+    public void aBookingRequestWithPhone(String phone) { request = BookingRequestBuilder.aValidBooking().withPhone(phone).build(); }
+
+    @Given("a booking request with email {string}")
+    public void aBookingRequestWithEmail(String email) { request = BookingRequestBuilder.aValidBooking().withEmail(email).build(); }
 }

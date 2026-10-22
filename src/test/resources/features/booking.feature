@@ -24,3 +24,21 @@ Feature: Booking API contract and lifecycle
     Given a booking request with first name "A123456789123456789"
     When I submit the booking request
     Then the API should reject the request with a validation error
+
+  # Negative test case for a phone number < minimum length
+  Scenario: Reject a phone number shorter than the documented minimum
+    Given a booking request with phone "1234567890"
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+  
+  # Negative test case for a phone number > maximum length
+  Scenario: Reject a phone number taller than the documented maximum
+    Given a booking request with phone "1234567890123456789012"
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  # Negative test case for invalid email format
+  Scenario: Reject a malformed email address
+    Given a booking request with email "not-an-email"
+    When I submit the booking request
+    Then the API should reject the request with a validation error
