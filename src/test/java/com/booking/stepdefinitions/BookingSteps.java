@@ -47,5 +47,9 @@ public class BookingSteps {
         BookingAssertions.assertCreatedBooking(response, request.getFirstname(), request.getLastname());
     }
 
+    @Given("a booking request with first name {string}")
+    public void aBookingRequestWithFirstName(String firstName) { request = BookingRequestBuilder.aValidBooking().withFirstName(firstName).build(); }
 
+    @Then("the API should reject the request with a validation error")
+    public void theApiShouldRejectTheRequestWithValidationError() { BookingAssertions.assertValidationError(response); }
 }
