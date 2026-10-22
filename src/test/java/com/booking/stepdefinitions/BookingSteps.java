@@ -17,6 +17,8 @@ import static io.restassured.RestAssured.request;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import java.util.Map;
+
 /** Step definitions orchestrate scenarios; API mechanics remain in BookingApiClient. */
 public class BookingSteps {
     private final BookingApiClient api = new BookingApiClient();
@@ -25,6 +27,7 @@ public class BookingSteps {
     private BookingRequest request;
     private String token;
     private Integer createdBookingId;
+    private boolean bookingDeleted;
 
     @When("I check the API health")
     public void iCheckApiHealth() {  
@@ -106,5 +109,55 @@ public class BookingSteps {
         assertThat(response.jsonPath().getString("firstname"), is(request.getFirstname()));
         assertThat(response.jsonPath().getString("lastname"), is(request.getLastname()));
         assertThat(response.jsonPath().getInt("roomid"), is(request.getRoomid()));
+    }
+
+
+    @When("I replace the created booking with updated details")
+    public void iReplaceCreatedBooking() {
+        request = BookingRequestBuilder.aValidBooking().withFirstName("Updated").withLastName("Guest").build();
+        response = api.updateBooking(createdBookingId, token, request);
+    }
+
+    @When("I partially update the created booking's first name")
+    public void iPartiallyUpdateCreatedBooking() {
+        response = api.patchBooking(createdBookingId, token, Map.of("firstname", "Patched1"));
+    }
+
+    @Then("the update should return the updated booking")
+    public void theUpdateShouldReturnUpdatedBooking() {
+        assertThat("update status", response.statusCode(), is(200));
+        BookingAssertions.assertJson(response);
+        assertThat(response.jsonPath().getString("booking.firstname"), is("Updated"));
+        assertThat(response.jsonPath().getString("booking.lastname"), is("Guest"));
+    }
+
+    @Then("the partial update should change only the first name")
+    public void thePartialUpdateShouldChangeOnlyFirstName() {
+        assertThat("patch status", response.statusCode(), is(200));
+        BookingAssertions.assertJson(response);
+        assertThat(response.jsonPath().getString("firstname"), is("Patched"));
+        assertThat(response.jsonPath().getString("lastname"), is("Guest"));
+    }
+
+     @When("I delete the created booking")
+    public void iDeleteCreatedBooking() {
+        response = api.deleteBooking(createdBookingId, token);
+        if (response.statusCode() == 201) bookingDeleted = true;
+    }
+
+    @When("I try to retrieve the deleted booking")
+    public void iRetrieveDeletedBooking() { response = api.getBooking(createdBookingId, token); }
+
+    @Then("the booking should be deleted successfully")
+    public void theBookingShouldBeDeletedSuccessfully() {
+        System.out.println("Status: " + response.statusCode());
+        System.out.println("Body: " + response.asPrettyString());   
+        assertThat("delete status documented by OpenAPI", response.statusCode(), is(201));
+        bookingDeleted = true;
+    }
+
+    @Then("the deleted booking should no longer be retrievable")
+    public void theDeletedBookingShouldNoLongerBeRetrievable() {
+        assertThat("deleted booking should not return success", response.statusCode(), not(is(200)));
     }
 }

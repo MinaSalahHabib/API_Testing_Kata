@@ -97,8 +97,24 @@ Feature: Booking API contract and lifecycle
     When I submit the booking request
     Then the API should reject the request with a validation error
 
- Scenario: Retrive existing a booking with authentication
+  Scenario: Retrive existing a booking with authentication
     When I authenticate with the configured API credentials
     And I create a booking using the authenticated session
     And I retrieve the created booking using the token
     Then the retrieved booking should match the submitted details
+
+ Scenario: Update existing a booking with authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I replace the created booking with updated details
+    Then the update should return the updated booking
+    When I partially update the created booking's first name
+    Then the partial update should change only the first name
+
+Scenario: Delete existing a booking with authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I delete the created booking
+    Then the booking should be deleted successfully
+    When I try to retrieve the deleted booking
+    Then the deleted booking should no longer be retrievable
