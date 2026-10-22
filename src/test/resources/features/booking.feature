@@ -25,6 +25,18 @@ Feature: Booking API contract and lifecycle
     When I submit the booking request
     Then the API should reject the request with a validation error
 
+  # Negative test case for last name < minimum length
+  Scenario: Reject a last name below the documented minimum length
+    Given a booking request with last name "Al"
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  # Negative test case for last name > maximum length
+  Scenario: Reject a last name Exceeds the documented maximum length
+    Given a booking request with last name "A123456789123456789"
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
   # Negative test case for a phone number < minimum length
   Scenario: Reject a phone number shorter than the documented minimum
     Given a booking request with phone "1234567890"
@@ -38,13 +50,37 @@ Feature: Booking API contract and lifecycle
     Then the API should reject the request with a validation error
 
   # Negative test case for invalid email format
-  Scenario: Reject a malformed email address
+  Scenario: Reject Booking with a malformed email address
     Given a booking request with email "not-an-email"
     When I submit the booking request
     Then the API should reject the request with a validation error
 
   # Negative test case for invalid booking dates 
-  Scenario: Reject checkout before check-in
+  Scenario: Reject Booking checkout before check-in
     Given a booking request with checkout before check-in
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  #Negative test case for Booking without mandatory field (email)
+  Scenario: Reject Booking without email address
+    Given a booking request with email ""
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+ 
+  #Negative test case for Booking without mandatory field (first name) 
+  Scenario: Reject Booking without first name 
+    Given a booking request with first name ""
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  #Negative test case for Booking without mandatory field (last name) 
+  Scenario: Reject Booking without last name 
+    Given a booking request with last name ""
+    When I submit the booking request
+    Then the API should reject the request with a validation error
+
+  #Negative test case for Booking without mandatory field (phone number)
+  Scenario: Reject a phone number shorter than the documented minimum
+    Given a booking request with phone ""
     When I submit the booking request
     Then the API should reject the request with a validation error
