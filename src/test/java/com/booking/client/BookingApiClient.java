@@ -1,7 +1,7 @@
-package com.kata.api.clients;
+package com.booking.client;
 
-import com.kata.api.config.ApiConfig;
-import com.kata.api.models.BookingRequest;
+import com.booking.config.ApiConfig;
+import com.booking.models.BookingRequest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.Map;

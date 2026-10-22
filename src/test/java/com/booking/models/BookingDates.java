@@ -1,4 +1,4 @@
-package com.kata.api.models;
+package com.booking.models;
 
 public class BookingDates {
     private String checkin;

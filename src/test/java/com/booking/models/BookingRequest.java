@@ -1,4 +1,4 @@
-package com.kata.api.models;
+package com.booking.models;
 
 public class BookingRequest {
     private int roomid;

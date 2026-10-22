@@ -1,4 +1,4 @@
-package com.kata.api.config;
+package com.booking.config;
 
 /** Centralized configuration; secrets can be supplied via system properties or environment variables. */
 public final class ApiConfig {
