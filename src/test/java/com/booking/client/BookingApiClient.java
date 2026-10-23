@@ -29,9 +29,9 @@ public class BookingApiClient {
         return given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON)
                 .body(json).when().post(BOOKING_PATH);
     }
-    public Response login(String username, String password) {
+    public Response login() {
         return given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON)
-                .body(Map.of("username", username, "password", password)).when().post(AUTHORIZATIO_PATH);
+                .body(Map.of("username", ApiConfig.username(), "password", ApiConfig.password())).when().post(AUTHORIZATIO_PATH);
     }
     public Response getBooking(int bookingId, String token) {
         var request = given().baseUri(ApiConfig.baseUrl()).accept(ContentType.JSON);
