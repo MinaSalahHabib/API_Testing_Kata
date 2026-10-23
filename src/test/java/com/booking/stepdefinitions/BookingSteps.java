@@ -4,7 +4,7 @@ package com.booking.stepdefinitions;
 
 import com.booking.builder.BookingRequestBuilder;
 import com.booking.client.BookingApiClient;
-import com.booking.config.ApiConfig;
+
 import com.booking.models.BookingRequest;
 import com.booking.assertions.BookingAssertions;
 
@@ -13,9 +13,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.restassured.response.Response;
 
-import static io.restassured.RestAssured.request;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+
 
 import java.util.Map;
 
@@ -146,5 +144,10 @@ public class BookingSteps {
     @Then("the deleted booking should no longer be retrievable")
     public void theDeletedBookingShouldNoLongerBeRetrievable() {
         BookingAssertions.assertDeletedBookingNoLongerExist(response);
+    }
+
+    @Then("the created booking response should match the contract schema")
+    public void theCreatedBookingResponseShouldMatchTheContractSchema() {
+        BookingAssertions.assertCreatedBookingSchema(response);
     }
 }

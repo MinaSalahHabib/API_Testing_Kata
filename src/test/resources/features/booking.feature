@@ -118,3 +118,8 @@ Scenario: Delete existing a booking with authentication
     Then the booking should be deleted successfully
     When I try to retrieve the deleted booking
     Then the deleted booking should no longer be retrievable
+
+Scenario: Created booking response should conform to the OpenAPI schema
+  Given a valid booking request
+  When I submit the booking request
+  Then the created booking response should match the contract schema

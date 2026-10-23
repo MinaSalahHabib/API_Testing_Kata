@@ -2,7 +2,7 @@ package com.booking.assertions;
 
 import io.restassured.response.Response;
 
-import static io.restassured.RestAssured.request;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -10,7 +10,12 @@ import static org.hamcrest.Matchers.*;
  * Reusable assertions for live API responses.
  */
 public final class BookingAssertions {
-
+    
+    private static final int OK = 200;
+    private static final int CREATED = 201;
+    private static final int BAD_REQUEST = 400;
+    private static final int UNAUTHORIZED = 401;
+    private static final int NOT_FOUND = 404;
     private BookingAssertions() {
     }
 
@@ -19,7 +24,7 @@ public final class BookingAssertions {
             String expectedFirstName,
             String expectedLastName) {
 
-        assertThat("HTTP status", response.statusCode(), is(201));
+        assertThat("HTTP status", response.statusCode(), is(CREATED));
         assertJson(response);
 
         assertThat(
@@ -69,7 +74,7 @@ public final class BookingAssertions {
         assertThat(
                 "invalid booking should be rejected",
                 response.statusCode(),
-                is(400)
+                is(BAD_REQUEST)
         );
 
         assertJson(response);
@@ -90,12 +95,12 @@ public final class BookingAssertions {
     }
 
     public static void assertHealthy(Response response) {
-        assertThat("health status", response.statusCode(), is(200));
+        assertThat("health status", response.statusCode(), is(OK));
         assertThat("health state", response.jsonPath().getString("status"), is("UP"));
         assertJson(response);
     }
     public static void assertLogin(Response response) {
-        assertThat("login status", response.statusCode(), is(200));
+        assertThat("login status", response.statusCode(), is(OK));
         assertJson(response);
         String token = response.jsonPath().getString("token");
         assertThat("login response must contain a non-empty token", token, not(isEmptyOrNullString()));
@@ -105,7 +110,7 @@ public final class BookingAssertions {
                                               String expectedFirstName,
                                               String expectedLastName,
                                               int expectedRoomId) {
-        assertThat("get status", response.statusCode(), is(200));
+        assertThat("get status", response.statusCode(), is(OK));
         assertJson(response);
         assertThat(response.jsonPath().getString("firstname"), is(expectedFirstName));
         assertThat(response.jsonPath().getString("lastname"), is(expectedLastName));
@@ -113,49 +118,33 @@ public final class BookingAssertions {
     }
 
     public static void assertUpdatedBooking(Response response,String expectedFirstName, String expectedLastName) {
-        assertThat("update status", response.statusCode(), is(200));
+        assertThat("update status", response.statusCode(), is(OK));
         BookingAssertions.assertJson(response);
         assertThat(response.jsonPath().getString("booking.firstname"), is(expectedFirstName));
         assertThat(response.jsonPath().getString("booking.lastname"), is(expectedLastName));
     }
 
     public static void assertDeletedBooking(Response response) {
-        assertThat("delete status documented by OpenAPI", response.statusCode(), is(201));
+        assertThat("delete status documented by OpenAPI", response.statusCode(), is(CREATED));
     }
     public static void assertDeletedBookingNoLongerExist(Response response) {
-        assertThat("deleted booking should not return success", response.statusCode(), not(is(200)));
+        assertThat("deleted booking should not return success", response.statusCode(), not(is(OK)));
     }
-    public static void assertAllMessages(Response response) {
-    assertThat("messages status", response.statusCode(), is(200));
+    public static void assertAllMessages(Response response) {   
+        assertThat("messages status", response.statusCode(), is(OK));      
 
-    assertThat(
-        "At least one message should be returned",
-        response.jsonPath().getList("messages"),
-        not(empty())
-    );
+        assertThat( "At least one message should be returned", response.jsonPath().getList("messages"), not(empty()));  
 
-    assertThat(
-        "Every message should have an ID",
-        response.jsonPath().getList("messages.id"),
-        everyItem(notNullValue())
-    );
+        assertThat( "Every message should have an ID", response.jsonPath().getList("messages.id"), everyItem(notNullValue()));  
 
-    assertThat(
-        "Every message should have a non-empty name",
-        response.jsonPath().getList("messages.name"),
-        everyItem(not(isEmptyOrNullString()))
-    );
+        assertThat( "Every message should have a non-empty name", response.jsonPath().getList("messages.name"), everyItem(not(isEmptyOrNullString())));  
 
-    assertThat(
-        "Every message should have a non-empty subject",
-        response.jsonPath().getList("messages.subject"),
-        everyItem(not(isEmptyOrNullString()))
-    );
+        assertThat( "Every message should have a non-empty subject", response.jsonPath().getList("messages.subject"), everyItem(not(isEmptyOrNullString())) );  
 
-    assertThat(
-        "Every message should have a read status",
-        response.jsonPath().getList("messages.read"),
-        everyItem(notNullValue())
-    );
-}
+        assertThat( "Every message should have a read status", response.jsonPath().getList("messages.read"), everyItem(notNullValue()));  
+     }       
+
+     public static void assertCreatedBookingSchema(Response response) {
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/booking-created.schema.json"));
+    }  
 }
