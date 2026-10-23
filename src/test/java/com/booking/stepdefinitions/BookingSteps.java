@@ -13,8 +13,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.restassured.response.Response;
 
-
-
 import java.util.Map;
 
 /** Step definitions orchestrate scenarios; API mechanics remain in BookingApiClient. */
@@ -150,4 +148,32 @@ public class BookingSteps {
     public void theCreatedBookingResponseShouldMatchTheContractSchema() {
         BookingAssertions.assertCreatedBookingSchema(response);
     }
+
+    @When("I retrieve the created booking without a token")
+    public void iRetrieveTheCreatedBookingWithoutAToken() {
+        response = api.getBooking(createdBookingId, "");
+    }
+
+    @Then("the request should be rejected due to missing authentication")
+    public void theRequestShouldBeRejectedDueToMissingAuthentication() {
+        BookingAssertions.assertunauthorized(response);
+    }
+
+    
+    @When("I replace the created booking without a token")
+    public void iReplaceCreatedBookingWithoutToken() {
+        request = BookingRequestBuilder.aValidBooking().withFirstName("Updated").withLastName("Guest").build();
+        response = api.updateBooking(createdBookingId, "", request);
+    }
+
+    @When("I partially update the created booking's first name without a token")
+    public void iPartiallyUpdateCreatedBookingFirstNameWithoutToken() {
+        response = api.patchBooking(createdBookingId,"",Map.of("firstname", "Patched1"));
+    }
+
+    @When("I delete the created booking without a token")
+    public void iDeleteCreatedBookingWithoutToken() {
+        response = api.deleteBooking(createdBookingId, "");
+    }
+
 }

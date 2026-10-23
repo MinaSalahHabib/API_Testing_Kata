@@ -86,6 +86,13 @@ public final class BookingAssertions {
         );
     }
 
+    public static void assertunauthorized(Response response) {
+        assertThat(
+                "unauthorized request should be rejected",
+                response.statusCode(),
+                is(UNAUTHORIZED)
+        );
+    }
     public static void assertJson(Response response) {
         assertThat(
                 "Content-Type should be JSON",

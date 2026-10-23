@@ -38,16 +38,22 @@ public class BookingApiClient {
         if (token != null && !token.isBlank()) request.header("Cookie", "token=" + token);
         return request.when().get(BOOKING_PATH + "/" + bookingId);
     }
+    
     public Response updateBooking(int bookingId, String token, BookingRequest body) {
-        return given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON)
-                .header("Cookie", "token=" + token).body(body).when().put(BOOKING_PATH + "/" + bookingId);
+        var request = given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON);
+        if (token != null && !token.isBlank()) request.header("Cookie", "token=" + token);
+        return request.body(body).when().put(BOOKING_PATH + "/" + bookingId);
     }
+
     public Response patchBooking(int bookingId, String token, Map<String, Object> body) {
-        return given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON)
-                .header("Cookie", "token=" + token).body(body).when().patch(BOOKING_PATH + "/" + bookingId);
+        var request = given().baseUri(ApiConfig.baseUrl()).contentType(ContentType.JSON).accept(ContentType.JSON);
+        if (token != null && !token.isBlank()) request.header("Cookie", "token=" + token);
+        return request.body(body).when().patch(BOOKING_PATH + "/" + bookingId);
     }
+
     public Response deleteBooking(int bookingId, String token) {
-        return given().baseUri(ApiConfig.baseUrl()).header("Cookie", "token=" + token)
-                .when().delete(BOOKING_PATH + "/" + bookingId);
+        var request = given().baseUri(ApiConfig.baseUrl());
+        if (token != null && !token.isBlank()) request.header("Cookie", "token=" + token); 
+        return request.when().delete(BOOKING_PATH + "/" + bookingId);
     }
 }

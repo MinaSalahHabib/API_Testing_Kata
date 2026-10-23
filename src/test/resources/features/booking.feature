@@ -123,3 +123,26 @@ Scenario: Created booking response should conform to the OpenAPI schema
   Given a valid booking request
   When I submit the booking request
   Then the created booking response should match the contract schema
+
+Scenario: Retrieve an existing booking without authentication
+  When I create a booking using the authenticated session
+  And I retrieve the created booking without a token
+  Then the request should be rejected due to missing authentication
+
+Scenario: Update an existing booking without authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I replace the created booking without a token
+    Then the request should be rejected due to missing authentication
+
+Scenario: Partially update a booking without authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I partially update the created booking's first name without a token
+    Then the request should be rejected due to missing authentication
+
+Scenario: Delete an existing booking without authentication
+    When I authenticate with the configured API credentials
+    And I create a booking using the authenticated session
+    And I delete the created booking without a token
+    Then the request should be rejected due to missing authentication
